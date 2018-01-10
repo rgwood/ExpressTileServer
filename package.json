@@ -1,0 +1,17 @@
+{
+  "name": "expresstileserver",
+  "version": "1.0.0",
+  "description": "Serve tiles from a Postgres/PostGIS DB in Mapbox Vector Tile format",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Reilly Wood",
+  "license": "ISC",
+  "dependencies": {
+    "@mapbox/sphericalmercator": "^1.0.5",
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "pg": "^7.4.1"
+  }
+}
