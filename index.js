@@ -15,6 +15,8 @@ const sql = `
 SELECT ST_AsMVT(q)
 FROM (
     SELECT
+        random()*255 random,
+        streetname,
         ST_AsMVTGeom(
             geom,
             TileBBox($1, $2, $3, 3857),
