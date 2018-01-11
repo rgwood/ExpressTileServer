@@ -2,7 +2,6 @@ const express = require("express")
 const app = express()
 const { Pool } = require("pg")
 const cors = require('cors')
-const SphericalMercator = require("@mapbox/sphericalmercator")
 const pool = new Pool({
     host: "localhost",
     port: 5432,
@@ -10,14 +9,12 @@ const pool = new Pool({
     database: "gis",
     password: "docker"
 })
-const mercator = new SphericalMercator()
 
 app.use(express.static("./"))
 app.use(cors());
 
 app.get("/mvt/:x/:y/:z", function(req, res) {
-    let bbox = mercator.bbox(req.params.x, req.params.y, req.params.z)
-    console.log(bbox.join(", "))
+    console.log(`called for ${req.params.x}/${req.params.y}/${req.params.z}`)
 
     const sql = `
         SELECT ST_AsMVT(q)
@@ -25,15 +22,15 @@ app.get("/mvt/:x/:y/:z", function(req, res) {
             SELECT
                 ST_AsMVTGeom(
                     geom,
-                    TileBBox(${req.params.z}, ${req.params.x}, ${req.params.y}, 3857),
+                    TileBBox($1, $2, $3, 3857),
                     4096,
                     0,
                     false
                 ) geom
             FROM van_parcels
-            WHERE ST_Intersects(geom, (SELECT ST_Transform(ST_MakeEnvelope($1, $2, $3, $4, $5), 3857)))
+            WHERE ST_Intersects(geom, TileBBox($1, $2, $3, 3857))
         ) q`
-    const values = [bbox[0], bbox[1], bbox[2], bbox[3], 4326]
+    const values = [req.params.z, req.params.x, req.params.y]
     pool.query(sql, values , function(err, mvt) {
             if (err) {
                 console.log(err)

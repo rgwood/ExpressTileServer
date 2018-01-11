@@ -9,7 +9,6 @@
   "author": "Reilly Wood",
   "license": "ISC",
   "dependencies": {
-    "@mapbox/sphericalmercator": "^1.0.5",
     "cors": "^2.8.4",
     "express": "^4.16.2",
     "pg": "^7.4.1"
